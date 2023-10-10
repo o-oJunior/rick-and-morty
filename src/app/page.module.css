@@ -58,3 +58,12 @@
 .info span {
   padding: 5px;
 }
+
+.listEpisodes {
+  margin-top: 20px;
+}
+
+.listEpisodes span {
+  font-size: 22px;
+  font-weight: bold;
+}
