@@ -24,6 +24,7 @@ interface IEpisode {
 export default function Home() {
   const [characters, setCharacters] = useState<object[]>([])
   const [selectCharacter, setSelectCharacter] = useState<ICharacter>()
+  const [episodes, setEpisodes] = useState<IEpisode[]>([])
 
   useEffect(() => {
     getCharacters()
@@ -39,7 +40,24 @@ export default function Home() {
     }
   }
 
-  const showCharacter = (character: ICharacter) => {
+  const showCharacter = async (character: ICharacter) => {
+    const { episode } = character
+    const allEpisodes: IEpisode[] = []
+    if (episode) {
+      for (let i = 0; i < episode.length; i++) {
+        const url = episode[i]
+
+        try {
+          const response: Response = await fetch(url)
+          const { name, episode } = await response.json()
+          allEpisodes.push({ name, episode })
+        } catch (error) {
+          console.log(error)
+        }
+      }
+
+      setEpisodes(allEpisodes)
+    }
     setSelectCharacter(character)
   }
 
@@ -72,19 +90,20 @@ export default function Home() {
               <span>Nome: {selectCharacter.name}</span>
               <span>Status: {selectCharacter.status}</span>
               <span>Espécie: {selectCharacter.species}</span>
-              {selectCharacter.episode.map(async (ep) => {
-                try {
-                  const response = await fetch(ep)
-                  const data = response.json()
-                } catch (error) {
-                  console.log(error)
-                }
-                return (
-                  <ul>
-                    <li></li>
-                  </ul>
-                )
-              })}
+              {episodes.length > 0 && (
+                <div className={styles.listEpisodes}>
+                  <span>Episódios:</span>
+                  {episodes.map((ep) => {
+                    return (
+                      <ul className={styles.list}>
+                        <li>
+                          Número: {ep.episode} Title: {ep.name}
+                        </li>
+                      </ul>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           </div>
         )}
