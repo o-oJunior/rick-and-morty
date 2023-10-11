@@ -1,6 +1,7 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import styles from './page.module.css'
+import HeaderSearch from '@/components/headerSearch/HeaderSearch'
 
 interface IData {
   info: object
@@ -21,20 +22,28 @@ interface IEpisode {
   episode: string
 }
 
+const initialValue: ICharacter = { id: 0, name: '', image: '', status: '', species: '', episode: [] }
+
 export default function Home() {
   const [characters, setCharacters] = useState<object[]>([])
-  const [selectCharacter, setSelectCharacter] = useState<ICharacter>()
+  const [selectCharacter, setSelectCharacter] = useState<ICharacter>(initialValue)
   const [episodes, setEpisodes] = useState<IEpisode[]>([])
+  const [filter, setFilter] = useState<string>('')
 
   useEffect(() => {
     getCharacters()
-  }, [])
+  }, [filter])
 
   const getCharacters = async () => {
+    setSelectCharacter(initialValue)
     try {
       const response: Response = await fetch('https://rickandmortyapi.com/api/character')
-      const data: IData = await response.json()
-      setCharacters(data.results)
+      const { results }: IData = await response.json()
+      if (filter) {
+        const filterCharacters = results.filter((item: any) => item.status === filter)
+        return setCharacters(filterCharacters)
+      }
+      setCharacters(results)
     } catch (error) {
       console.log(error)
     }
@@ -45,7 +54,7 @@ export default function Home() {
     const allEpisodes: IEpisode[] = []
     if (episode) {
       for (let i = 0; i < episode.length; i++) {
-        const url = episode[i]
+        const url: string = episode[i]
 
         try {
           const response: Response = await fetch(url)
@@ -61,12 +70,17 @@ export default function Home() {
     setSelectCharacter(character)
   }
 
+  const handleChangeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
+    setFilter(e.target.value)
+  }
+
   return (
     <main className={styles.main}>
       <div className={styles.container}>
         {characters.length > 0 && (
           <div className={styles.containerList}>
             <h2>Lista de Personagens</h2>
+            <HeaderSearch select={(e) => handleChangeSelect(e)} />
             {characters.map((character: any) => {
               return (
                 <ul onClick={() => showCharacter(character)} className={styles.list} key={character.id}>
@@ -80,22 +94,22 @@ export default function Home() {
           </div>
         )}
 
-        {selectCharacter && (
+        {selectCharacter!.name !== '' && (
           <div className={styles.details}>
             <h2>Detalhes do Personagem</h2>
             <div className={styles.containerImage}>
-              <img className={styles.image} src={selectCharacter.image} alt="Foto" />
+              <img className={styles.image} src={selectCharacter!.image} alt="Foto" />
             </div>
             <div className={styles.info}>
-              <span>Nome: {selectCharacter.name}</span>
-              <span>Status: {selectCharacter.status}</span>
-              <span>Espécie: {selectCharacter.species}</span>
+              <span>Nome: {selectCharacter!.name}</span>
+              <span>Status: {selectCharacter!.status}</span>
+              <span>Espécie: {selectCharacter!.species}</span>
               {episodes.length > 0 && (
                 <div className={styles.listEpisodes}>
                   <span>Episódios:</span>
-                  {episodes.map((ep) => {
+                  {episodes.map((ep, i) => {
                     return (
-                      <ul className={styles.list}>
+                      <ul className={styles.list} key={i}>
                         <li>
                           Número: {ep.episode} Title: {ep.name}
                         </li>

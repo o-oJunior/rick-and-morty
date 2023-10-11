@@ -1,0 +1,32 @@
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px 0px 0px 0px;
+}
+
+.inputSearch {
+  border: 1px solid #c9c9c9;
+  padding: 3px;
+}
+
+.btnSearch {
+  padding: 4px;
+  background-color: #0000ff;
+  color: #fff;
+}
+
+.inputSearch:focus {
+  outline: none;
+  border: 1px solid #757575;
+}
+
+.selectFilter {
+  width: 10em;
+  padding: 3px;
+  background-color: #c9c9c9;
+}
+
+.selectFilter option {
+  background-color: #fff;
+}
