@@ -70,8 +70,19 @@ export default function Home() {
     setSelectCharacter(character)
   }
 
-  const handleChangeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
-    setFilter(e.target.value)
+  const handleChangeSelect = (event: ChangeEvent<HTMLSelectElement>) => {
+    setFilter(event.target.value)
+  }
+
+  const handleChangeSearch = async (event: ChangeEvent<HTMLInputElement>) => {
+    const text: string = event.target.value
+    try {
+      const response: Response = await fetch(`https://rickandmortyapi.com/api/character/?name=${text}`)
+      const { results }: IData = await response.json()
+      setCharacters(results)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -80,7 +91,10 @@ export default function Home() {
         {characters.length > 0 && (
           <div className={styles.containerList}>
             <h2>Lista de Personagens</h2>
-            <HeaderSearch select={(e) => handleChangeSelect(e)} />
+            <HeaderSearch
+              select={(event) => handleChangeSelect(event)}
+              inputSearch={(event) => handleChangeSearch(event)}
+            />
             {characters.map((character: any) => {
               return (
                 <ul onClick={() => showCharacter(character)} className={styles.list} key={character.id}>
