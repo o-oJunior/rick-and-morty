@@ -2,17 +2,23 @@ import { ChangeEvent } from 'react'
 import styles from './headerSearch.module.css'
 
 interface IProps {
-  select: (e: ChangeEvent<HTMLSelectElement>) => void
+  select: (event: ChangeEvent<HTMLSelectElement>) => void
+  inputSearch: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
-const HeaderSearch = ({ select }: IProps) => {
+const HeaderSearch = ({ select, inputSearch }: IProps) => {
   return (
     <header className={styles.header}>
       <div>
-        <input className={styles.inputSearch} type="text" placeholder="Pesquisar" />
+        <input
+          className={styles.inputSearch}
+          type="text"
+          placeholder="Pesquisar"
+          onChange={(event) => inputSearch(event)}
+        />
         <button className={styles.btnSearch}>Pesquisar</button>
       </div>
-      <select className={styles.selectFilter} onChange={(e) => select(e)}>
+      <select className={styles.selectFilter} onChange={(event) => select(event)}>
         <option value={''}>Todos</option>
         <option value={'Alive'}>Vivo</option>
         <option value={'Dead'}>Morto</option>
