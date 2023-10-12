@@ -3,8 +3,12 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import styles from './page.module.css'
 import HeaderSearch from '@/components/headerSearch/HeaderSearch'
 
+type Info = {
+  next: string
+  prev: string
+}
 interface IData {
-  info: object
+  info: Info
   results: object[]
 }
 
@@ -22,30 +26,48 @@ interface IEpisode {
   episode: string
 }
 
+interface IPage {
+  next: string
+  previous: string
+}
+
 const initialValue: ICharacter = { id: 0, name: '', image: '', status: '', species: '', episode: [] }
 
 export default function Home() {
   const [characters, setCharacters] = useState<object[]>([])
   const [selectCharacter, setSelectCharacter] = useState<ICharacter>(initialValue)
   const [episodes, setEpisodes] = useState<IEpisode[]>([])
-  const [filter, setFilter] = useState<string>('')
+  const [filterStatus, setFilterStatus] = useState<string>('')
+  const [textSearch, setTextSearch] = useState<string>('')
+  const [api, setApi] = useState<string>('https://rickandmortyapi.com/api/character')
+  const [page, setPage] = useState<IPage>({ next: '', previous: '' })
 
   useEffect(() => {
     getCharacters()
-  }, [filter])
+  }, [filterStatus, api, textSearch])
 
   const getCharacters = async () => {
     setSelectCharacter(initialValue)
     try {
-      const response: Response = await fetch('https://rickandmortyapi.com/api/character')
-      const { results }: IData = await response.json()
-      if (filter) {
-        const filterCharacters = results.filter((item: any) => item.status === filter)
-        return setCharacters(filterCharacters)
+      const response: Response = await fetch(api)
+      const { results, info }: IData = await response.json()
+      const linkNext = info.next ? info.next : ''
+      const linkPrevious = info.prev ? info.prev : ''
+      setPage({ next: linkNext, previous: linkPrevious })
+      if (filterStatus != '' && textSearch != '') {
+        const filterCharactersByStatus = results.filter((item: any) => item.status === filterStatus)
+        const filterCharactersByName = filterCharactersByStatus.filter((item: any) =>
+          item.name.includes(textSearch),
+        )
+        return setCharacters(filterCharactersByName)
+      }
+      if (filterStatus) {
+        const filterCharactersByStatus = results.filter((item: any) => item.status === filterStatus)
+        return setCharacters(filterCharactersByStatus ? filterCharactersByStatus : [])
       }
       setCharacters(results)
     } catch (error) {
-      console.log(error)
+      console.log('Erro ao exibir os personagens!')
     }
   }
 
@@ -61,7 +83,7 @@ export default function Home() {
           const { name, episode } = await response.json()
           allEpisodes.push({ name, episode })
         } catch (error) {
-          console.log(error)
+          console.log('Erro ao tentar mostrar o personagem')
         }
       }
 
@@ -71,42 +93,59 @@ export default function Home() {
   }
 
   const handleChangeSelect = (event: ChangeEvent<HTMLSelectElement>) => {
-    setFilter(event.target.value)
+    setFilterStatus(event.target.value)
   }
 
   const handleChangeSearch = async (event: ChangeEvent<HTMLInputElement>) => {
     const text: string = event.target.value
+    setTextSearch(text)
     try {
       const response: Response = await fetch(`https://rickandmortyapi.com/api/character/?name=${text}`)
       const { results }: IData = await response.json()
       setCharacters(results)
     } catch (error) {
-      console.log(error)
+      console.log('Erro ao tentar pesquisar personagem!')
     }
+  }
+
+  const handleNextPage = (): void => {
+    setApi(page.next)
+  }
+
+  const handlePreviousPage = (): void => {
+    setApi(page.previous)
   }
 
   return (
     <main className={styles.main}>
       <div className={styles.container}>
-        {characters.length > 0 && (
-          <div className={styles.containerList}>
-            <h2>Lista de Personagens</h2>
-            <HeaderSearch
-              select={(event) => handleChangeSelect(event)}
-              inputSearch={(event) => handleChangeSearch(event)}
-            />
-            {characters.map((character: any) => {
-              return (
-                <ul onClick={() => showCharacter(character)} className={styles.list} key={character.id}>
-                  <li>
-                    <img className={styles.image} src={character.image} alt="Foto" />
-                  </li>
-                  <li className={styles.text}>{character.name}</li>
-                </ul>
-              )
-            })}
-          </div>
-        )}
+        <div className={styles.containerList}>
+          <h2>Lista de Personagens</h2>
+          <HeaderSearch
+            select={(event) => handleChangeSelect(event)}
+            inputSearch={(event) => handleChangeSearch(event)}
+          />
+          {characters && characters.length > 0 ? (
+            <div>
+              {characters.map((character: any) => {
+                return (
+                  <ul onClick={() => showCharacter(character)} className={styles.list} key={character.id}>
+                    <li>
+                      <img className={styles.image} src={character.image} alt="Foto" />
+                    </li>
+                    <li className={styles.text}>{character.name}</li>
+                  </ul>
+                )
+              })}
+              <div className={styles.containerBtn}>
+                {page.previous && <button onClick={handlePreviousPage}>Anterior</button>}
+                {page.next && <button onClick={handleNextPage}>Próximo</button>}
+              </div>
+            </div>
+          ) : (
+            <span className={styles.textNotFound}>Nenhum personagem encontrado!</span>
+          )}
+        </div>
 
         {selectCharacter!.name !== '' && (
           <div className={styles.details}>
