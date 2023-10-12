@@ -108,11 +108,11 @@ export default function Home() {
     }
   }
 
-  const handleNextPage = (): void => {
+  const navigateNextPage = (): void => {
     setApi(page.next)
   }
 
-  const handlePreviousPage = (): void => {
+  const navigatePreviousPage = (): void => {
     setApi(page.previous)
   }
 
@@ -138,8 +138,8 @@ export default function Home() {
                 )
               })}
               <div className={styles.containerBtn}>
-                {page.previous && <button onClick={handlePreviousPage}>Anterior</button>}
-                {page.next && <button onClick={handleNextPage}>Próximo</button>}
+                {page.previous && <button onClick={navigatePreviousPage}>Anterior</button>}
+                {page.next && <button onClick={navigateNextPage}>Próximo</button>}
               </div>
             </div>
           ) : (
