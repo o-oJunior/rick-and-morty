@@ -9,7 +9,7 @@ interface IProps {
 const HeaderSearch = ({ select, inputSearch }: IProps) => {
   return (
     <header className={styles.header}>
-      <div>
+      <div className={styles.groupSearch}>
         <input
           className={styles.inputSearch}
           type="text"

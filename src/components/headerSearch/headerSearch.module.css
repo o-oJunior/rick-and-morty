@@ -3,6 +3,7 @@
   flex-direction: row;
   justify-content: space-between;
   padding: 10px 0px 0px 0px;
+  flex-wrap: wrap;
 }
 
 .inputSearch {
@@ -26,9 +27,19 @@
   width: 10em;
   padding: 3px;
   background-color: #c9c9c9;
-  margin-left: 10px;
 }
 
 .selectFilter option {
   background-color: #fff;
+}
+
+@media (width < 440px) {
+  .header {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .groupSearch {
+    margin-bottom: 10px;
+  }
 }

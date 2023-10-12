@@ -1,20 +1,15 @@
 .main {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 2rem 6rem;
-  min-height: 100vh;
-}
-
-.container {
-  display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  padding: 2rem 6rem;
+  flex-wrap: wrap;
 }
 
 .containerList {
   padding: 10px;
   border: 1px solid #dedede;
+  flex-grow: 1;
+  margin-right: 20px;
 }
 
 .list {
@@ -50,7 +45,8 @@
 .details {
   padding: 10px;
   border: 1px solid #dedede;
-  width: 50%;
+  flex-grow: 1;
+  margin-left: 20px;
 }
 
 .containerImage {
@@ -88,4 +84,24 @@
   background-color: #0000ff;
   color: #fff;
   cursor: pointer;
+}
+
+@media (width < 1241px) {
+  .containerList {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+  .details {
+    margin-left: 0;
+  }
+
+  .main {
+    padding: 20px;
+  }
+}
+
+@media (width < 601px) {
+  .main h2 {
+    text-align: center;
+  }
 }
