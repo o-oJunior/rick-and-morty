@@ -54,16 +54,15 @@ export default function Home() {
       const linkNext = info.next ? info.next : ''
       const linkPrevious = info.prev ? info.prev : ''
       setPage({ next: linkNext, previous: linkPrevious })
-      if (filterStatus != '' && textSearch != '') {
-        const filterCharactersByStatus = results.filter((item: any) => item.status === filterStatus)
-        const filterCharactersByName = filterCharactersByStatus.filter((item: any) =>
-          item.name.includes(textSearch),
-        )
-        return setCharacters(filterCharactersByName)
-      }
       if (filterStatus) {
         const filterCharactersByStatus = results.filter((item: any) => item.status === filterStatus)
-        return setCharacters(filterCharactersByStatus ? filterCharactersByStatus : [])
+        if (textSearch) {
+          const filterCharactersByName = filterCharactersByStatus.filter((item: any) =>
+            item.name.includes(textSearch),
+          )
+          return setCharacters(filterCharactersByName)
+        }
+        return setCharacters(filterCharactersByStatus)
       }
       setCharacters(results)
     } catch (error) {
@@ -102,6 +101,7 @@ export default function Home() {
     try {
       const response: Response = await fetch(`https://rickandmortyapi.com/api/character/?name=${text}`)
       const { results }: IData = await response.json()
+      setApi(response.url)
       setCharacters(results)
     } catch (error) {
       console.log('Erro ao tentar pesquisar personagem!')
@@ -143,7 +143,12 @@ export default function Home() {
               </div>
             </div>
           ) : (
-            <span className={styles.textNotFound}>Nenhum personagem encontrado!</span>
+            <div>
+              <span className={styles.textNotFound}>Nenhum personagem encontrado!</span>
+              <div className={styles.containerBtn}>
+                {page.previous && <button onClick={navigatePreviousPage}>Anterior</button>}
+              </div>
+            </div>
           )}
         </div>
 
