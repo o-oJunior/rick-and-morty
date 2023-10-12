@@ -118,68 +118,66 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <div className={styles.container}>
-        <div className={styles.containerList}>
-          <h2>Lista de Personagens</h2>
-          <HeaderSearch
-            select={(event) => handleChangeSelect(event)}
-            inputSearch={(event) => handleChangeSearch(event)}
-          />
-          {characters && characters.length > 0 ? (
-            <div>
-              {characters.map((character: any) => {
-                return (
-                  <ul onClick={() => showCharacter(character)} className={styles.list} key={character.id}>
-                    <li>
-                      <img className={styles.image} src={character.image} alt="Foto" />
-                    </li>
-                    <li className={styles.text}>{character.name}</li>
-                  </ul>
-                )
-              })}
-              <div className={styles.containerBtn}>
-                {page.previous && <button onClick={navigatePreviousPage}>Anterior</button>}
-                {page.next && <button onClick={navigateNextPage}>Próximo</button>}
-              </div>
+      <div className={styles.containerList}>
+        <h2>Lista de Personagens</h2>
+        <HeaderSearch
+          select={(event) => handleChangeSelect(event)}
+          inputSearch={(event) => handleChangeSearch(event)}
+        />
+        {characters && characters.length > 0 ? (
+          <div>
+            {characters.map((character: any) => {
+              return (
+                <ul onClick={() => showCharacter(character)} className={styles.list} key={character.id}>
+                  <li>
+                    <img className={styles.image} src={character.image} alt="Foto" />
+                  </li>
+                  <li className={styles.text}>{character.name}</li>
+                </ul>
+              )
+            })}
+            <div className={styles.containerBtn}>
+              {page.previous && <button onClick={navigatePreviousPage}>Anterior</button>}
+              {page.next && <button onClick={navigateNextPage}>Próximo</button>}
             </div>
-          ) : (
-            <div>
-              <span className={styles.textNotFound}>Nenhum personagem encontrado!</span>
-              <div className={styles.containerBtn}>
-                {page.previous && <button onClick={navigatePreviousPage}>Anterior</button>}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {selectCharacter!.name !== '' && (
-          <div className={styles.details}>
-            <h2>Detalhes do Personagem</h2>
-            <div className={styles.containerImage}>
-              <img className={styles.image} src={selectCharacter!.image} alt="Foto" />
-            </div>
-            <div className={styles.info}>
-              <span>Nome: {selectCharacter!.name}</span>
-              <span>Status: {selectCharacter!.status}</span>
-              <span>Espécie: {selectCharacter!.species}</span>
-              {episodes.length > 0 && (
-                <div className={styles.listEpisodes}>
-                  <span>Episódios:</span>
-                  {episodes.map((ep, i) => {
-                    return (
-                      <ul className={styles.list} key={i}>
-                        <li>
-                          Número: {ep.episode} Title: {ep.name}
-                        </li>
-                      </ul>
-                    )
-                  })}
-                </div>
-              )}
+          </div>
+        ) : (
+          <div>
+            <span className={styles.textNotFound}>Nenhum personagem encontrado!</span>
+            <div className={styles.containerBtn}>
+              {page.previous && <button onClick={navigatePreviousPage}>Anterior</button>}
             </div>
           </div>
         )}
       </div>
+
+      {selectCharacter!.name !== '' && (
+        <div className={styles.details}>
+          <h2>Detalhes do Personagem</h2>
+          <div className={styles.containerImage}>
+            <img className={styles.image} src={selectCharacter!.image} alt="Foto" />
+          </div>
+          <div className={styles.info}>
+            <span>Nome: {selectCharacter!.name}</span>
+            <span>Status: {selectCharacter!.status}</span>
+            <span>Espécie: {selectCharacter!.species}</span>
+            {episodes.length > 0 && (
+              <div className={styles.listEpisodes}>
+                <span>Episódios:</span>
+                {episodes.map((ep, i) => {
+                  return (
+                    <ul className={styles.list} key={i}>
+                      <li>
+                        Número: {ep.episode} Title: {ep.name}
+                      </li>
+                    </ul>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </main>
   )
 }
