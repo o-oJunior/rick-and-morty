@@ -51,8 +51,8 @@ export default function Home() {
     try {
       const response: Response = await fetch(api)
       const { results, info }: IData = await response.json()
-      const linkNext = info.next ? info.next : ''
-      const linkPrevious = info.prev ? info.prev : ''
+      const linkNext: string = info.next ? info.next : ''
+      const linkPrevious: string = info.prev ? info.prev : ''
       setPage({ next: linkNext, previous: linkPrevious })
       if (filterStatus) {
         const filterCharactersByStatus = results.filter((item: any) => item.status === filterStatus)
@@ -79,7 +79,7 @@ export default function Home() {
 
         try {
           const response: Response = await fetch(url)
-          const { name, episode } = await response.json()
+          const { name, episode }: IEpisode = await response.json()
           allEpisodes.push({ name, episode })
         } catch (error) {
           console.log('Erro ao tentar mostrar o personagem')
