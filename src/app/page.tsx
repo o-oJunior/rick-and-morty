@@ -58,7 +58,7 @@ export default function Home() {
         const filterCharactersByStatus = results.filter((item: any) => item.status === filterStatus)
         if (textSearch) {
           const filterCharactersByName = filterCharactersByStatus.filter((item: any) =>
-            item.name.includes(textSearch),
+            item.name.toLowerCase().includes(textSearch.toLocaleLowerCase()),
           )
           return setCharacters(filterCharactersByName)
         }
